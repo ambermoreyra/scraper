@@ -22,6 +22,14 @@ var BrewersSchema = new Schema({
   note: {
     type: Schema.Types.ObjectId,
     ref: "Note"
+  },
+
+  //saved: type boolean
+
+  saved: {
+      type: Boolean,
+      required: true,
+      default: false
   }
 });
 
@@ -30,3 +38,4 @@ var Brewers = mongoose.model("Brewers", BrewersSchema);
 
 // Export the Article model
 module.exports = Brewers;
+

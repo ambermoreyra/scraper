@@ -16,6 +16,7 @@ var PORT = 3000;
 // Initialize Express
 var app = express();
 
+app.use(express.static("public"));
 // Configure middleware
 
 // Use morgan logger for logging requests
@@ -26,13 +27,19 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 // Make public a static folder
-app.use(express.static("public"));
 
 // Connect to the Mongo DB
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
 mongoose.connect(MONGODB_URI);
+
+
+// Set Handlebars.
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 // Routes
 
@@ -44,7 +51,7 @@ app.get("/scrape", function (req, res) {
     var $ = cheerio.load(response.data);
 
     // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function (i, element) {
+    $("li.article-navigation__item").each(function (i, element) {
       // Save an empty result object
       var result = {};
 
@@ -75,6 +82,20 @@ app.get("/scrape", function (req, res) {
     res.send("Scrape Complete");
   });
 });
+
+app.get("/", function(req, res) {
+  console.log("in the / route");
+  db.Brewers.find({})
+  .then (function(data) {
+    console.log("data :", data);
+    var hbsObject = {
+      articles: data
+    };
+    console.log(hbsObject);
+    res.render("index", hbsObject);
+  });
+});
+
 
 // Route for getting all Articles from the db
 app.get("/articles", function (req, res) {
