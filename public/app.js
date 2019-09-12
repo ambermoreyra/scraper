@@ -10,7 +10,7 @@ $.getJSON("/articles", function (data) {
         // $(".brewers").append("<div class='card'>");
         $(".brewers").append("<div data-_id='" + data[i]._id + "' class='card mb-4'>");
         $("[data-_id=" + data[i]._id + "]").append("<h3 data-id=" + data[i]._id + " class='card-header card-title'>");
-        $("[data-id=" + data[i]._id + "]").append("<a class='article-link' target='_blank' href='https://www.mlb.com/brewers" + data[i].link + "'>" + data[i].title + "</a>").append("<a class='btn btn-info notes float-right'>" + 'Article Notes' + "</a>");
+        $("[data-id=" + data[i]._id + "]").append("<a dataId=" + data[i]._id + " class='article-link' target='_blank' href='https://www.mlb.com/brewers" + data[i].link + "'>" + data[i].title + "</a>").append("<a class='btn btn-info notes float-right'>" + 'Article Notes' + "</a>");
         // append("<a class='btn btn-danger delete ml-4 float-right'>" + 'Delete From Saved' + "</a>").append("<a class='btn btn-info notes float-right'>" + 'Article Notes' + "</a>");
 
     }
@@ -27,8 +27,9 @@ $(document).on("click", ".notes", function () {
     // Empty the notes from the note section
     $("#notes").empty();
     // Save the id from the p tag
-    var thisId = $(".card-header").attr("data-id");
+    var thisId = $("a").attr("dataId");
 
+    console.log("ID:", thisId);
     // Now make an ajax call for the Article
     $.ajax({
             method: "GET",
